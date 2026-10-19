@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex, nofollow">
+<style>body{margin:0}img{max-width:100%}</style>
+<title>Relax Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Karla:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: a quiet header, then three equal cards, each a window onto one scene (picture, name, what to do, what to find). Dark ground so the scenes glow; light theme is a warm paper version. */
+:root {
+  --bg: #f6f1ea;
+  --fg: #2a1d1a;
+  --dim: #6f5f58;
+  --line: #d9cdc2;
+  --card: #fffaf3;
+  --accent: #b8541a;
+  --display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --body: 'Karla', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #140d12; --fg: #f8ecda; --dim: #b9a99a; --line: #3a2a2c; --card: #1d1317; --accent: #ffb45e; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #140d12; --fg: #f8ecda; --dim: #b9a99a; --line: #3a2a2c; --card: #1d1317; --accent: #ffb45e; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.55; padding-inline: 20px; padding-block: 40px 56px; }
+.wrap { max-width: 1040px; margin-inline: auto; display: flex; flex-direction: column; gap: 40px; }
+header { display: flex; flex-direction: column; gap: 10px; max-width: 34rem; }
+h1 { margin: 0; font-family: var(--display); font-style: italic; font-weight: 500; font-size: clamp(2.6rem, 9vw, 4.2rem); line-height: 1; text-wrap: balance; }
+header p { margin: 0; color: var(--dim); font-size: 17px; max-width: 32rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 24px; }
+.card { display: flex; flex-direction: column; min-width: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; color: inherit; text-decoration: none; transition: transform .2s ease, border-color .2s ease; }
+.card:hover { transform: translateY(-3px); border-color: var(--accent); }
+.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.card img { display: block; width: 100%; height: auto; aspect-ratio: 900 / 560; object-fit: cover; background: var(--line); }
+.body { display: flex; flex-direction: column; gap: 10px; padding: 18px 18px 20px; flex: 1; }
+h2 { margin: 0; font-family: var(--display); font-style: italic; font-weight: 500; font-size: 1.9rem; line-height: 1.05; }
+.body p { margin: 0; color: var(--dim); }
+.find { margin-top: auto; padding-top: 12px; display: flex; justify-content: space-between; gap: 12px; align-items: baseline; border-top: 1px solid var(--line); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+.find span:first-child { color: var(--dim); }
+.find span:last-child { color: var(--accent); white-space: nowrap; }
+footer { color: var(--dim); font-size: 14px; max-width: 40rem; display: flex; flex-direction: column; gap: 6px; }
+footer p { margin: 0; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Relax Games</h1>
+    <p>Three small places to slow down. Brush the clover, stir the leaves, and watch the light change.</p>
+  </header>
+
+  <main class="grid">
+    <a class="card" href="clover.html">
+      <img src="thumbs/clover.jpg" alt="A clover meadow under a pale blue morning sky" width="900" height="560">
+      <div class="body">
+        <h2>Clover Field Relax</h2>
+        <p>A meadow under a sky that drifts from starry night through dawn, midday and dusk. Touch a clover and it rises. At night the field glows.</p>
+        <div class="find"><span>Hidden</span><span>Four-leaf clovers</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="fall.html">
+      <img src="thumbs/fall.jpg" alt="An autumn forest in soft morning mist with falling leaves" width="900" height="560">
+      <div class="body">
+        <h2>Fall Leaves Relax</h2>
+        <p>Your finger is the wind. Swirl the leaves, listen to the rustle in the trees, and tap Gust to sweep the ground clean.</p>
+        <div class="find"><span>Hidden</span><span>Silver leaves</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="aspen.html">
+      <img src="thumbs/aspen.jpg" alt="A grove of white aspen trees with golden leaves under a deep blue sky" width="900" height="560">
+      <div class="body">
+        <h2>Aspen Grove</h2>
+        <p>A variation of Fall Leaves Relax, built from the Flagstaff and Colorado photos: white trunks, golden crowns, red grass and stones.</p>
+        <div class="find"><span>Hidden</span><span>Silver leaves</span></div>
+      </div>
+    </a>
+  </main>
+
+  <footer>
+    <p>Each one works best on a phone or tablet. Tap once inside to start the sound.</p>
+    <p>Use your browser's back button to return here.</p>
+  </footer>
+</div>
+</body></html>
