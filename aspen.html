@@ -18,7 +18,7 @@ body { margin: 0; background: var(--night); color: var(--paper); font-family: va
 #stage { position: relative; width: 100%; height: 100%; }
 canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; background: var(--night); }
 .hud { position: absolute; left: 0; right: 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px 20px; padding: 14px 16px; pointer-events: none; text-shadow: 0 1px 14px rgba(0,0,0,.55); box-sizing: border-box; }
-.hud.top { top: 0; }
+.hud.top { top: 0; padding-top: 38px; }
 .hud.bot { bottom: 0; align-items: flex-end; flex-wrap: nowrap; padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
 h1 { margin: 0; font-family: var(--display); font-style: italic; font-weight: 500; font-size: clamp(1.7rem, 5.5vw, 2.6rem); line-height: 1; text-wrap: balance; }
 #count { margin-top: 8px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); transition: color .4s ease, transform .4s ease; transform-origin: left center; font-variant-numeric: tabular-nums; }
@@ -26,11 +26,13 @@ h1 { margin: 0; font-family: var(--display); font-style: italic; font-weight: 50
 #when { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); padding-top: 6px; white-space: nowrap; }
 #hint { margin: 0; min-width: 0; max-width: 20rem; padding: 8px 12px; background: var(--glass); border-radius: 8px; color: var(--paper); text-shadow: none; font-size: 14px; line-height: 1.35; transition: opacity 1.2s ease; }
 #hint.gone { opacity: 0; }
-.dock { position: relative; flex: none; pointer-events: auto; margin-left: auto; }
-#menu { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 16px; background: var(--glass); color: var(--paper); border: 1px solid var(--edge); border-radius: 22px; font: 500 14px var(--body); cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-#menu .chev { display: inline-block; width: 8px; height: 8px; border-right: 2px solid currentColor; border-top: 2px solid currentColor; transform: rotate(-45deg) translate(-1px, 1px); transition: transform .2s ease; }
-#menu[aria-expanded="true"] .chev { transform: rotate(135deg) translate(-1px, 1px); }
-.ctl { position: absolute; right: 0; bottom: calc(100% + 8px); width: min(calc(100vw - 32px), 360px); display: flex; flex-direction: column; gap: 14px; padding: 14px; background: var(--glass); border: 1px solid var(--edge); border-radius: 12px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); text-shadow: none; box-sizing: border-box; }
+.dock { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 5; pointer-events: auto; } /* a small tab hanging from the top centre, out of the way of the leaves */
+#menu { display: flex; align-items: center; justify-content: center; min-height: 30px; padding: 2px 26px 5px; background: var(--glass); color: var(--paper); border: 1px solid var(--edge); border-top: 0; border-radius: 0 0 14px 14px; font: 500 14px var(--body); cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: .5; transition: opacity .25s ease; }
+#menu .tl { display: none; }
+#menu:hover, #menu[aria-expanded="true"], #menu:focus-visible { opacity: 1; }
+#menu .chev { display: inline-block; width: 8px; height: 8px; border-right: 2px solid currentColor; border-top: 2px solid currentColor; transform: rotate(135deg) translate(-1px, 1px); transition: transform .2s ease; }
+#menu[aria-expanded="true"] .chev { transform: rotate(-45deg) translate(-1px, 1px); }
+.ctl { position: absolute; left: 50%; top: calc(100% + 8px); transform: translateX(-50%); max-height: calc(100vh - 56px); overflow-y: auto; width: min(calc(100vw - 32px), 360px); display: flex; flex-direction: column; gap: 14px; padding: 14px; background: var(--glass); border: 1px solid var(--edge); border-radius: 12px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); text-shadow: none; box-sizing: border-box; }
 .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .field label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
 input[type=range] { width: 100%; margin: 0; accent-color: var(--ember); min-height: 28px; }
@@ -40,34 +42,32 @@ input[type=range] { width: 100%; margin: 0; accent-color: var(--ember); min-heig
 .ctl[hidden] { display: none; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
 </style>
-
-<div id="stage">
 <style>
-#homeLink{position:fixed;z-index:50;top:calc(76px + env(safe-area-inset-top,0px));right:16px;display:flex;align-items:center;gap:6px;min-height:40px;padding:8px 14px;border-radius:999px;background:rgba(10,8,14,.55);color:#f8ecda;border:1px solid rgba(248,236,218,.3);font:500 14px system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:auto}
+#homeLink{position:fixed;z-index:4;top:calc(76px + env(safe-area-inset-top,0px));right:16px;display:flex;align-items:center;gap:6px;min-height:40px;padding:8px 14px;border-radius:999px;background:rgba(10,8,14,.55);color:#f8ecda;border:1px solid rgba(248,236,218,.3);font:500 14px system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:auto}
 #homeLink:hover{border-color:#f8ecda}
 #homeLink:focus-visible{outline:2px solid #ffb45e;outline-offset:2px}
 </style>
 <a id="homeLink" href="index.html" aria-label="Back to all games">&#8249; All games</a>
+<div id="stage">
   <canvas id="c" aria-label="Autumn forest with falling leaves. Drag a finger or the mouse to blow the leaves around."></canvas>
   <div class="hud top"><div class="brand"><h1>Aspen Grove</h1><div id="count" aria-live="polite">Silver leaves 0</div></div><div id="when" aria-live="off">Day</div></div>
   <div class="hud bot">
     <p id="hint">Drag your finger through the leaves and swirl them up.</p>
-    <div class="dock">
+  </div>
+  <div class="dock">
       <div id="ctl" class="ctl" hidden>
         <div class="field"><label for="sky">Time of day</label><input id="sky" type="range" min="0" max="999" value="170"></div>
         <div class="field"><label for="vol">Volume</label><input id="vol" type="range" min="0" max="100" value="40"></div>
-        <div class="field"><label for="wind">Wind strength</label><input id="wind" type="range" min="50" max="160" value="100"></div>
         <div class="btns">
           <button id="gust" type="button">Gust</button>
           <button id="drift" type="button" aria-pressed="true">Sky drift</button>
           <button id="snd" type="button" aria-pressed="true">Sound</button>
           <button id="chm" type="button" aria-pressed="true">Chimes</button>
           <button id="nsd" type="button" aria-pressed="true">Nature sounds</button>
-          <button id="mot" type="button" aria-pressed="true">Motion</button>
+          <button id="sur" type="button" aria-pressed="true">Surprise gusts</button>
         </div>
       </div>
-      <button id="menu" type="button" aria-expanded="false" aria-controls="ctl"><span>Controls</span><span class="chev" aria-hidden="true"></span></button>
-    </div>
+      <button id="menu" type="button" aria-expanded="false" aria-controls="ctl" aria-label="Controls" title="Controls"><span class="tl">Controls</span><span class="chev" aria-hidden="true"></span></button>
   </div>
 </div>
 
@@ -102,15 +102,15 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
   }
 
   /* ---------- state ---------- */
-  var T = 0.17, builtT = -1, autoDrift = true, muted = false, windK = 1;
+  var T = 0.17, builtT = -1, builtTn = null, autoDrift = true, muted = false, windK = 1;
   var reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   if (reduce) autoDrift = false;
-  var SHIMMER = false, motion = !reduce, CROWNS = [], GR = [], GL = [], MOUNDS = [], mound = document.createElement('canvas'), mctx = mound.getContext('2d'), moundT = document.createElement('canvas'); // live motion: swaying grass and quaking leaf glints (the Motion button turns both off)
+  var SHIMMER = false, motion = !reduce, CROWNS = [], GR = [], GL = [], MOUNDS = [], mbx = 0, mby = 0, mound = document.createElement('canvas'), mctx = mound.getContext('2d'), moundT = document.createElement('canvas'); // live motion: swaying grass and quaking leaf glints (the Motion button turns both off)
   var stars = [];
   var silverCount = 0, silverT = 8, rings = [], sparks = [], sprS = [], leaves = [], spawnT = 0, maxLeaves = 1000, night = 0, glowSpr = [];
   var ptr = { x: 0, y: 0, in: false, down: false, last: -10 };
-  var pv = { x: 0, y: 0 }, spin = 1, wamp = 0, trail = [];
-  var gust = null, lastInteract = 0;
+  var pv = { x: 0, y: 0 }, spin = 1, wamp = 0;
+  var gust = null, lastInteract = 0, surpriseOn = true, nextSurprise = 0;
 
   /* ---------- palette and leaf sprites ---------- */
   var PAL = [[255, 204, 20], [255, 170, 10], [255, 128, 20], [238, 86, 24], [214, 48, 30], [255, 226, 64], [92, 164, 52], [190, 36, 28], [172, 190, 56]];
@@ -156,8 +156,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
       spr[k] = spr[k] || [];
       for (var ci = 0; ci < PAL.length; ci++) {
         var cnv = spr[k][ci] || (spr[k][ci] = document.createElement('canvas'));
-        cnv.width = 64; cnv.height = 64;
+        if (cnv.width !== 64) { cnv.width = 64; cnv.height = 64; }
         var c = cnv.getContext('2d');
+        c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, 64, 64);
         c.translate(32, 34); c.scale(25, 25);
         var pts = POLYS[k];
         var g = c.createLinearGradient(0, -1, 0, 1);
@@ -186,8 +187,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     var t2 = [Math.pow(tn[0], 0.45), Math.pow(tn[1], 0.45), Math.pow(tn[2], 0.45)], SIL = [204, 214, 232];
     for (var k = 0; k < 6; k++) {
       var cnv = sprS[k] || (sprS[k] = document.createElement('canvas'));
-      cnv.width = 64; cnv.height = 64;
+      if (cnv.width !== 64) { cnv.width = 64; cnv.height = 64; }
       var c = cnv.getContext('2d'), pts = POLYS[k], i;
+      c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, 64, 64);
       c.translate(32, 34); c.scale(25, 25);
       var g = c.createLinearGradient(-0.6, -1, 0.6, 1);
       g.addColorStop(0, css(tintc(SIL, t2, 1.12))); g.addColorStop(0.5, css(tintc([232, 238, 248], t2, 1))); g.addColorStop(1, css(tintc(SIL, t2, 0.8)));
@@ -665,9 +667,12 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     }
   }
   function buildMounds() { // small still mounds of soil and leaf litter at the base of the front grass, so only the blades move
-    mound.width = moundT.width = scene.width; mound.height = moundT.height = scene.height;
-    mctx.setTransform(DPR, 0, 0, DPR, 0, 0); mctx.clearRect(0, 0, W, H);
-    var rm = mulberry32(515), i, m, k, rx, ry, g, n, ang, px, py, col;
+    var rm = mulberry32(515), i, m, k, rx, ry, g, n, ang, px, py, col, x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, ub;
+    for (i = 0; i < MOUNDS.length && motion; i++) { m = MOUNDS[i]; ub = Math.max(7 * S, m.w * 0.55) * 1.2; x0 = Math.min(x0, m.x - ub - 4); x1 = Math.max(x1, m.x + ub + 4); y0 = Math.min(y0, m.y - ub * 0.4 - 4); y1 = Math.max(y1, m.y + ub * 0.5 + 4); } // the area the mounds can cover, so the layer isn't a full-screen canvas
+    if (x1 < x0) { x0 = y0 = 0; x1 = y1 = 1; }
+    mbx = Math.floor(x0); mby = Math.floor(y0);
+    mound.width = moundT.width = Math.max(1, Math.ceil((x1 - mbx) * DPR)); mound.height = moundT.height = Math.max(1, Math.ceil((y1 - mby) * DPR));
+    mctx.setTransform(DPR, 0, 0, DPR, -mbx * DPR, -mby * DPR); mctx.clearRect(mbx, mby, mound.width / DPR + 1, mound.height / DPR + 1);
     for (i = 0; i < MOUNDS.length; i++) {
       m = MOUNDS[i]; if (!motion) break;
       rx = Math.max(7 * S, m.w * 0.55) * (0.8 + rm() * 0.4); ry = rx * (0.28 + rm() * 0.1);
@@ -735,7 +740,12 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     tctx.globalCompositeOperation = 'source-over';
     genSprites(tn); genSilver(tn); tintGrass(tn); tintMounds(tn);
     night = clamp((0.92 - (tn[0] + tn[1] + tn[2]) / 3) / 0.45, 0, 1);
-    builtT = T;
+    builtT = T; builtTn = tn.slice();
+  }
+  function tintMoved() { // the sky can drift a long way with almost no change in the forest's colour tint, so only redo the tinting once the tint has really shifted
+    if (!builtTn) return true;
+    var tn = skyAt(T).tint;
+    return Math.max(Math.abs(tn[0] - builtTn[0]), Math.abs(tn[1] - builtTn[1]), Math.abs(tn[2] - builtTn[2])) > 0.01;
   }
 
   /* ---------- sky ---------- */
@@ -809,10 +819,16 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     leaves.splice(lo, 0, L);
   }
   function spawnSilver() {
-    var n = 0;
-    for (var i = 0; i < leaves.length; i++) if (leaves[i].silver && !leaves[i].found) n++;
-    if (n >= 3) return;
+    var n = 0, old = null;
+    for (var i = 0; i < leaves.length; i++) {
+      var Q = leaves[i];
+      if (!Q.silver || Q.found || Q.vanish) continue;
+      n++;
+      if (Q.state === 1 && (!old || Q.t0 < old.t0)) old = Q; // the longest-resting silver leaf that nobody found
+    }
+    if (n >= 4) { if (!old) return; old.vanish = true; } // four at once is the limit: let the oldest resting one fade so a fresh one can fall
     var L = mkLeaf(false, true);
+    L.t0 = performance.now();
     L.silver = true; L.k = 4; L.sz *= 1.15; L.x = Math.random() * W * 0.9 + W * 0.05; L.y = -30; L.vx = 0; L.vy = 30 * S; L.ys = 1;
     insertLeaf(L);
   }
@@ -823,6 +839,10 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     rings.push({ x: L.x, y: L.y, t: time });
     for (var i = 0; i < 12; i++) { var a = Math.random() * 6.283, v = 25 + Math.random() * 45; sparks.push({ x: L.x, y: L.y, vx: Math.cos(a) * v * S, vy: Math.sin(a) * v * S - 25 * S, t: time, life: 1.2 + Math.random() * 0.8, z: 1.2 + Math.random() * 1.4 }); }
     chime(1, 0.05);
+  }
+  function vanishOne() { // the pile is full: let one resting leaf fade away, so the new falling ones keep coming
+    var n = leaves.length, start = (Math.random() * n) | 0, k, Q;
+    for (k = 0; k < n; k++) { Q = leaves[(start + k) % n]; if (Q.state === 1 && !Q.silver && !Q.fade && !Q.vanish) { Q.vanish = true; return; } }
   }
   function spawnLeaf() {
     var L = mkLeaf(false, true);
@@ -857,7 +877,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
       if ((gust.dir > 0 && gust.x > W * 1.35) || (gust.dir < 0 && gust.x < -W * 0.35)) { gust = null; gAmp = 0; }
     }
     var lifts = 0, anyDead = false; nearCount = 0; var breeze = Math.sin(time * 0.23) * 10 * S;
-    var gdk = Math.exp(-dt * 1.4);
+    var gdk = Math.exp(-dt * 1.4), gdkSlow = Math.exp(-dt * 0.55); // glow from a gust fades quickly; glow from your finger lingers, leaving a trail
     for (var i = 0; i < leaves.length; i++) {
       var L = leaves[i], ax = 0, ay = 0, f = 0, gf = 0, g = 0, d, dx, dy;
       if (pw > 0.02) {
@@ -865,23 +885,24 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
         var d2 = dx * dx + dy * dy;
         if (d2 < R2) {
           d = Math.sqrt(d2) + 0.001; f = 1 - d / R; f *= f; if (f > 0.08) nearCount++;
-          var dg = d / (R * 0.4); if (dg < 1) gf = (1 - dg) * (1 - dg);
+          var dg = d / (R * 0.55); if (dg < 1) gf = (1 - dg) * (1 - dg);
           ax += (-dy / d) * eff * 1100 * S * f * pw + pv.x * 1.3 * f * wamp - (dx / d) * 300 * S * f * pw;
           ay += (dx / d) * eff * 1100 * S * f * pw + pv.y * 1.3 * f * wamp - (dy / d) * 300 * S * f * pw - 380 * S * f * pw;
         }
       }
-      if (L.gl > 0.01) L.gl *= gdk; else L.gl = 0;
+      if (L.gl > 0.01) L.gl *= (L.slow ? gdkSlow : gdk); else { L.gl = 0; L.slow = false; }
       if (L.fade) { L.a -= dt / 2.6; L.gl = Math.max(L.gl, 0.9 * Math.max(0, L.a)); if (L.a <= 0) { L.dead = true; anyDead = true; continue; } }
-      if (gf > 0) { var gv = Math.min(1, gf * pw * 2); if (gv > L.gl) L.gl = gv; }
+      if (L.vanish) { L.a -= dt / 3; if (L.a <= 0) { L.dead = true; anyDead = true; continue; } }
+      if (gf > 0) { var gv = Math.min(1, gf * pw * 2); if (gv > L.gl) { L.gl = gv; L.slow = true; } }
       if (gust) {
         var q = (L.x - gust.x) / (W * 0.22);
         g = Math.exp(-q * q) * gAmp;
-        if (g > 0.05 && Math.min(1, g) * 0.5 > L.gl) L.gl = Math.min(1, g) * 0.5;
+        if (g > 0.05 && Math.min(1, g) * 0.5 > L.gl) { L.gl = Math.min(1, g) * 0.5; L.slow = false; }
         if (gust.clear && g > 0.12) L.sw = gust.dir;
         if (g > 0.01) { ax += gust.dir * 950 * S * g; ay -= 330 * S * g * (0.4 + 0.6 * Math.sin(L.ph * 3 + time * 2)); }
       }
       if (L.state === 1) {
-        if (L.silver && !L.found && L.face < 0 && f > 0.1 && pw > 0.15) { foundLeaf(L, time); continue; }
+        if (L.silver && !L.found && f > 0.1 && pw > 0.15) { foundLeaf(L, time); continue; } // a silver leaf counts once it is on the ground and a finger or cursor passes near it, whichever side is up
         var push = f * pw + g * 0.9;
         if (push > L.th) {
           L.state = 0; L.rest = 0; if (L.silver) L.fp = L.face < 0 ? Math.PI : 0; L.vx = ax * 0.03; L.vy = -(80 + 220 * Math.min(1, push)) * S * (0.5 + Math.random() * 0.6); L.vr = (Math.random() - 0.5) * 10; lifts++;
@@ -907,9 +928,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
       if (L.x < -100 || L.x > W + 100 || L.y < -260) { L.dead = true; anyDead = true; }
     }
     if (anyDead) { var w = 0; for (var q2 = 0; q2 < leaves.length; q2++) if (!leaves[q2].dead) leaves[w++] = leaves[q2]; leaves.length = w; }
-    silverT -= dt; if (silverT <= 0) { silverT = 18 + Math.random() * 14; spawnSilver(); }
+    silverT -= dt; if (silverT <= 0) { silverT = 11 + Math.random() * 10; spawnSilver(); }
     spawnT += dt;
-    if (spawnT > 0.3) { spawnT = 0; if (leaves.length < maxLeaves) spawnLeaf(); }
+    if (spawnT > 0.3) { spawnT = 0; if (leaves.length >= maxLeaves) vanishOne(); if (leaves.length < maxLeaves + 60) spawnLeaf(); }
     return lifts;
   }
 
@@ -964,26 +985,22 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     }
     ctx.globalCompositeOperation = 'source-over';
   }
-  function drawTrail(now) {
-    while (trail.length && now - trail[0].t > 0.55) trail.shift();
-    if (trail.length < 3) return;
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    for (var r = 0; r < 2; r++) {
-      for (var i = 1; i < trail.length; i++) {
-        var a = trail[i - 1], b = trail[i], age = (now - b.t) / 0.55, al = (1 - age) * (r ? 0.18 : 0.32);
-        var off = r ? Math.sin(i * 0.6 + now * 8) * 7 * S : 0;
-        ctx.strokeStyle = 'rgba(255,244,225,' + al.toFixed(3) + ')'; ctx.lineWidth = (r ? 1.2 : 2.2) * (1 - age * 0.6);
-        ctx.beginPath(); ctx.moveTo(a.x + off, a.y + off * 0.6); ctx.lineTo(b.x + off, b.y + off * 0.6); ctx.stroke();
-      }
-    }
-  }
-
   /* ---------- sound: wind rustling in the trees ---------- */
   var chimesOn = true, stir = 0, lastMotion = 0, CH = [783.99, 880, 987.77, 1174.66, 1318.51, 1567.98], chimeBus, nextChime = 0, vol = 0.4, AC = null, master, windG, bp, rustG, leafG = [], nearCount = 0, crG, owlBus, nextOwl = 0, OWL_ON = false, birdBus, nextBird = 0, wasDay = false, nightSnd = true, wasNight = false;
+  var keepAlive = null, audioErr = '';
+  function wakeAudio() { // iPhones can leave the audio engine 'suspended' after a call or the lock screen; ask it to run again whenever we can
+    try { if (AC && AC.state !== 'running') { var rp = AC.resume(); if (rp && rp.catch) rp.catch(function () {}); } } catch (e) {}
+  }
+  ['pointerup', 'touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, function () { if (AC) wakeAudio(); }, true); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && AC) wakeAudio(); });
+  window.addEventListener('pageshow', function () { if (AC) wakeAudio(); });
   function initAudio() {
-    if (AC) { try { if (AC.state === 'suspended') AC.resume(); } catch (e) {} return; }
+    if (AC) { wakeAudio(); return; }
+    if (!(window.AudioContext || window.webkitAudioContext)) audioErr = 'no Web Audio in this browser';
     try {
       AC = new (window.AudioContext || window.webkitAudioContext)();
+      AC.onstatechange = function () { if (AC.state !== 'running' && !document.hidden) setTimeout(function () { try { AC.resume(); } catch (e) {} }, 250); };
+      wakeAudio();
       master = AC.createGain(); master.gain.value = muted ? 0 : vol * 0.6; master.connect(AC.destination);
       chimeBus = AC.createGain(); chimeBus.connect(master);
       var dl = AC.createDelay(1), fb = AC.createGain(), wet = AC.createGain(), clp = AC.createBiquadFilter();
@@ -1002,11 +1019,98 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
       rustG = AC.createGain(); rustG.gain.value = 1; rhp.connect(rlp); rlp.connect(rustG); rustG.connect(master);
       leafG = []; var LR = [[11, 7, 401], [13, 30, 402], [9, 120, 403]], li;
       for (li = 0; li < 3 && LEAF_ON; li++) { var ls = AC.createBufferSource(); ls.buffer = leafBuf(AC, LR[li][0], LR[li][1], LR[li][2]); ls.loop = true; var lg = AC.createGain(); lg.gain.value = 0; ls.connect(lg); lg.connect(rhp); ls.start(AC.currentTime, li * 2.3); leafG.push(lg); }
-      crG = AC.createGain(); crG.gain.value = 0; crG.connect(master); buildCrickets(AC, crG);
+      crG = AC.createGain(); crG.gain.value = 0; crG.connect(master); ckLevel = AC.createGain(); ckLevel.gain.value = CRICKETCLIP.vol; ckLevel.connect(crG);
       owlBus = AC.createGain(); owlBus.gain.value = 1; owlBus.connect(master);
       var owlSend = AC.createGain(); owlSend.gain.value = 0.7; owlBus.connect(owlSend); owlSend.connect(dl);
       birdBus = AC.createGain(); birdBus.connect(master); var birdSend = AC.createGain(); birdSend.gain.value = 0.5; birdBus.connect(birdSend); birdSend.connect(dl);
-    } catch (e) { AC = null; }
+      loadClips();
+    } catch (e) { audioErr = (e && e.message) || String(e); if (!master) AC = null; }
+  }
+  /* ---------- recorded sound: the wind gust ---------- */
+  var GUSTCLIP = { url: 'audio/wind-gust.mp3', buf: null, norm: 1, vol: 0.5, loading: false };
+  var CRICKETCLIP = { url: 'audio/crickets.mp3', buf: null, norm: 1, vol: 0.24, loading: false, rms: true };
+  var BEDCLIP = { url: 'audio/day-birds-leaves.wav', buf: null, norm: 1, vol: 0.18, loading: false, rms: true }, bedG = null, bedSrc = null, bedZero = 0;
+  var ckLevel = null, ckV = [], ckNextSpawn = 0, ckNextLull = 0, ckLullEnd = 0, owlDuckUntil = 0;
+  var OWL_ANSWER = 0.4, OWLCLIP = { url: 'audio/owl-hooting.mp3', buf: null, norm: 1, vol: 0.7, loading: false };
+  function loadClips() { loadClip(GUSTCLIP); loadClip(OWLCLIP); loadClip(CRICKETCLIP); loadClip(BEDCLIP); }
+  function loadClip(c) { // each sound file is fetched and decoded once, after the first tap (the audio engine only exists then)
+    if (!AC || c.buf || c.loading) return; c.loading = true;
+    try {
+      fetch(c.url).then(function (r) { if (!r.ok) throw new Error('status ' + r.status); return r.arrayBuffer(); }).then(function (ab) {
+        AC.decodeAudioData(ab, function (b) {
+          var pk = 0, ch, d, i, a; for (ch = 0; ch < b.numberOfChannels; ch++) { d = b.getChannelData(ch); for (i = 0; i < d.length; i++) { a = d[i] < 0 ? -d[i] : d[i]; if (a > pk) pk = a; } }
+          if (c.rms) { var q = 0, d0 = b.getChannelData(0), n0 = d0.length; for (i = 0; i < n0; i++) q += d0[i] * d0[i]; c.norm = Math.min(12, 0.06 / Math.max(Math.sqrt(q / Math.max(1, n0)), 0.0005)); } // a steady background clip is levelled by its average loudness
+          else c.norm = Math.min(12, 0.8 / Math.max(pk, 0.001));
+          c.buf = b; c.loading = false; if (c === CRICKETCLIP && ckLevel) ckLevel.gain.value = c.vol * c.norm;
+        }, function () { c.loading = false; });
+      }).catch(function () { c.loading = false; });
+    } catch (e) { c.loading = false; }
+  }
+  function playGustClip(dir) { // a gust of wind in the trees that sweeps across from one side to the other
+    var c = GUSTCLIP; if (!AC || !c.buf || muted || !master) return false;
+    try {
+      var t = AC.currentTime + 0.03, src = AC.createBufferSource(), g = AC.createGain(), pn;
+      src.buffer = c.buf; g.gain.value = c.vol * c.norm; src.connect(g);
+      if (AC.createStereoPanner) { pn = AC.createStereoPanner(); pn.pan.setValueAtTime(-0.7 * dir, t); pn.pan.linearRampToValueAtTime(0.7 * dir, t + 2.6); g.connect(pn); pn.connect(master); } else g.connect(master);
+      src.start(t); return true;
+    } catch (e) { return false; }
+  }
+  function hootAt(delay, pan, lvl) { // one hoot of the owl clip, through the owl echo
+    var c = OWLCLIP, t = AC.currentTime + 0.05 + delay, src = AC.createBufferSource(), g = AC.createGain(), pn;
+    src.buffer = c.buf; g.gain.value = c.vol * c.norm * lvl; src.connect(g);
+    if (AC.createStereoPanner) { pn = AC.createStereoPanner(); pn.pan.value = pan; g.connect(pn); pn.connect(owlBus); } else g.connect(owlBus);
+    src.start(t);
+  }
+  function playOwlClip() { // a hoot from a random place in the stereo field; about four times in ten it is answered a few seconds later, softer, from the other side. Returns the seconds of sound.
+    var c = OWLCLIP; if (!AC || !c.buf || !owlBus) return 0;
+    try {
+      var pan = (Math.random() - 0.5) * 1.2, d = c.buf.duration, total = d, gap;
+      hootAt(0, pan, 1);
+      if (Math.random() < OWL_ANSWER) { gap = d + 3 + Math.random() * 3; hootAt(gap, -pan, 0.55); total = gap + d; }
+      owlDuckUntil = AC.currentTime + total + 1; // the crickets dip while the owl calls
+      return total;
+    } catch (e) { return 0; }
+  }
+  function ramp(a, b, x) { return sm(clamp((x - a) / (b - a), 0, 1)); }
+  function birdsAmt() { return ramp(0.0, 0.1, T) * (1 - ramp(0.38, 0.56, T)); } // in with the sunrise, fading out as the sky turns to sunset
+  function bedUpdate(n, amt) { // the daytime birds and rustling leaves: a seamless loop that comes in with the morning and is gone by dusk
+    var c = BEDCLIP;
+    if (!bedG) { bedG = AC.createGain(); bedG.gain.value = 0; bedG.connect(master); }
+    if (amt > 0.01 && !bedSrc) {
+      bedSrc = AC.createBufferSource(); bedSrc.buffer = c.buf; bedSrc.loop = true; bedSrc.connect(bedG);
+      bedSrc.start(0, Math.random() * c.buf.duration); bedZero = 0;
+    }
+    bedG.gain.setTargetAtTime(amt * c.vol * c.norm, n, 1.5);
+    if (bedSrc && amt <= 0.005) { // once it has been silent for a while, stop the loop so nothing runs all night
+      if (!bedZero) bedZero = n;
+      else if (n - bedZero > 8) { try { bedSrc.stop(); } catch (e) {} bedSrc = null; bedZero = 0; }
+    } else bedZero = 0;
+  }
+  function cricketAmt() { return ramp(0.5, 0.66, T) * (1 - ramp(0.8, 0.9, T)); } // in as the sky turns to sunset, fully out by the time dawn begins
+  function spawnCricket(t) { // one voice: a piece of the clip from a random place, faded in and out
+    var b = CRICKETCLIP.buf; if (!AC || !b || !ckLevel) return;
+    var dur = b.duration, len = Math.min(dur / 1.05 - 0.05, 7 + Math.random() * 11), fade, off, src, g, pn, vg;
+    fade = Math.min(3.4 * (0.7 + 0.6 * Math.random()), len / 2.4);
+    off = Math.random() * Math.max(0, dur - len * 1.05);
+    src = AC.createBufferSource(); src.buffer = b; src.playbackRate.value = 0.97 + Math.random() * 0.06;
+    g = AC.createGain(); vg = 0.55 + 0.45 * Math.random();
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(vg, t + fade); g.gain.setValueAtTime(vg, t + len - fade); g.gain.linearRampToValueAtTime(0.0001, t + len);
+    src.connect(g);
+    if (AC.createStereoPanner) { pn = AC.createStereoPanner(); pn.pan.value = (Math.random() - 0.5) * 1.6; g.connect(pn); pn.connect(ckLevel); } else g.connect(ckLevel);
+    src.start(t, off); src.stop(t + len + 0.05);
+    ckV.push({ src: src, end: t + len + 0.1, fadeAt: t + len - fade });
+  }
+  function crickets(n, time, active) { // one to three voices, slow swings in how busy it is, and an occasional hush that never goes fully silent
+    var i, cnt = 0, want, act;
+    for (i = ckV.length - 1; i >= 0; i--) { if (ckV[i].end < n) ckV.splice(i, 1); else if (n < ckV[i].fadeAt) cnt++; } // a voice that has started to fade no longer counts, so its successor comes in under it
+    if (!active) return;
+    if (!ckNextLull) ckNextLull = n + 15 + Math.random() * 30;
+    var base = CRICKETCLIP.vol * CRICKETCLIP.norm;
+    if (n >= ckNextLull && n >= ckLullEnd) { ckLullEnd = n + 4 + Math.random() * 6; ckNextLull = ckLullEnd + 40 + Math.random() * 60; ckLevel.gain.setTargetAtTime(base * 0.6, n, 1.2); }
+    else if (ckLullEnd && n >= ckLullEnd) { ckLullEnd = 0; ckLevel.gain.setTargetAtTime(base, n, 1.5); }
+    act = 0.5 + 0.5 * Math.sin(time * 0.05 + 1.3 * Math.sin(time * 0.017));
+    want = Math.round(1 + 2 * act * 0.6);
+    if (cnt < want && n >= ckNextSpawn) { spawnCricket(n + 0.05); ckNextSpawn = n + 0.8 + Math.random() * 2.5; }
   }
   function nightAmt() { return clamp((skyAt(T).stars - 0.1) / 0.6, 0, 1); }
   function chime(v, delay, idx, nl) {
@@ -1034,25 +1138,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     nextChime = AC.currentTime + (lerp(10, 2.6, clamp(i * 1.4, 0, 1)) + Math.random() * 3) * (1 + 0.7 * nl);
   }
   /* ---------- night sounds: crickets and a distant owl, all synthesized ---------- */
-  function cricketBuf(ctx, len, ks, freqs, pans, seed) {
-    var sr = ctx.sampleRate, L = Math.round(len * sr), buf = ctx.createBuffer(2, L, sr), dl = buf.getChannelData(0), dr = buf.getChannelData(1), rg = mulberry32(seed);
-    for (var j = 0; j < ks.length; j++) {
-      var period = len / ks[j], f = freqs[j], m = 3 + (j % 2), ph0 = rg() * period, pan = (pans[j] + 1) * 0.25 * Math.PI, gl = Math.cos(pan), gr = Math.sin(pan);
-      for (var c = 0; c < ks[j]; c++) {
-        if (rg() < 0.08) continue;
-        var t0 = c * period + ph0 + (rg() - 0.5) * period * 0.05, amp = 0.2 * (0.75 + 0.5 * rg());
-        for (var p = 0; p < m; p++) {
-          var tp = t0 + p * 0.026, n0 = Math.floor(tp * sr), nn = Math.floor(0.017 * sr);
-          for (var q = 0; q < nn; q++) {
-            var u = q / nn, e = Math.sin(Math.PI * u); e *= e;
-            var v = amp * (1 - 0.12 * p) * e * Math.sin(6.283185 * f * (1 - 0.025 * u) * q / sr), ix = (n0 + q) % L;
-            dl[ix] += v * gl; dr[ix] += v * gr;
-          }
-        }
-      }
-    }
-    return buf;
-  }
   var LEAFK = 0.03, LEAF_ON = false; // the leaf rustle layer is switched off: it sounded like a sputtering sprinkler
   function leafBuf(ctx, len, rate, seed) { // many tiny soft papery rustles; a sparse set sounds like delicate shimmer, a dense set fuses into a wash
     var sr = ctx.sampleRate, L = Math.round(len * sr), buf = ctx.createBuffer(2, L, sr), dl = buf.getChannelData(0), dr = buf.getChannelData(1), rg = mulberry32(seed), n = Math.round(rate * len), i, j;
@@ -1072,13 +1157,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     var wave = 0.5 + 0.5 * Math.sin(time * 0.52 + 1.4 * Math.sin(time * 0.13)); // a slow irregular swell, roughly every 12 seconds
     var lvl = clamp(0.08 + 1.0 * (0.7 * wave + 0.3 * sw) * (0.6 + 0.4 * sw2) + 0.9 * intensity, 0, 1.3) * (1 - 0.35 * nl), K = LEAFK * (1 - 0.55 * nl);
     return [K * (1 - 0.5 * sm(clamp((lvl - 0.5) / 0.6, 0, 1))), K * sm(clamp((lvl - 0.12) / 0.63, 0, 1)), K * Math.pow(sm(clamp((lvl - 0.5) / 0.7, 0, 1)), 1.5), lvl];
-  }
-  function buildCrickets(ctx, dest) {
-    var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5600; lp.Q.value = 0.4; lp.connect(dest);
-    var A = ctx.createBufferSource(), B = ctx.createBufferSource();
-    A.buffer = cricketBuf(ctx, 10, [24, 27, 31, 35], [3600, 4000, 3350, 4350], [-0.6, 0.5, -0.2, 0.7], 101);
-    B.buffer = cricketBuf(ctx, 13, [33, 38, 29], [3900, 3500, 4200], [0.2, -0.7, 0.4], 202);
-    A.loop = B.loop = true; A.connect(lp); B.connect(lp); A.start(0); B.start(0);
   }
   function owlEnv(dur, amp, att) {
     var N = 96, c = new Float32Array(N), i, u, a = att / dur;
@@ -1152,16 +1230,19 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     try {
       var lv = clamp((skyAt(T).stars - 0.15) / 0.85, 0, 1), on = nightSnd && !muted, n = AC.currentTime;
       var swell = 0.75 + 0.25 * Math.sin(time * 0.13) * Math.sin(time * 0.071 + 1);
-      var lvR = T >= 0.75 ? 1 : lv, moonTail = T >= 0.75 ? sm(clamp((1 - T) / 0.14, 0, 1)) : 1;
-      crG.gain.setTargetAtTime(on ? lvR * lvR * moonTail * 0.05 * swell : 0, n, 1.2);
+      var ca = cricketAmt();
+      crG.gain.setTargetAtTime(on ? ca * swell * (n < owlDuckUntil ? 0.45 : 1) : 0, n, 0.8);
+      if (CRICKETCLIP.buf && ckLevel) crickets(n, time, on && ca > 0.03);
       var isN = on && lv > 0.35;
       if (isN && !wasNight) nextOwl = n + 9 + Math.random() * 14;
       wasNight = isN;
       var isD = on && clamp(1 - skyAt(T).stars / 0.5, 0, 1) > 0.6;
       if (isD && !wasDay) nextBird = n + 2.5 + Math.random() * 5;
       wasDay = isD;
-      if (isD && n >= nextBird) { birdCall(AC, birdBus, n + 0.05, clamp(1 - skyAt(T).stars / 0.5, 0, 1)); nextBird = n + 8 + Math.random() * 16; }
-      if (OWL_ON && isN && n >= nextOwl) { owlCall(AC, owlBus, n + 0.05); nextOwl = n + 40 + Math.random() * 55; }
+      if (isD && n >= nextBird) { if (!BEDCLIP.buf) birdCall(AC, birdBus, n + 0.05, clamp(1 - skyAt(T).stars / 0.5, 0, 1)); nextBird = n + 8 + Math.random() * 16; } // the game's own synthetic birds step aside once the recording is loaded
+      if (BEDCLIP.buf && master) bedUpdate(n, on ? birdsAmt() : 0);
+      if (isN && n >= nextOwl && OWLCLIP.buf) nextOwl = n + 0.05 + playOwlClip() + 25 + 20 * Math.random();
+      else if (OWL_ON && isN && n >= nextOwl) { owlCall(AC, owlBus, n + 0.05); nextOwl = n + 40 + Math.random() * 55; }
     } catch (e) {}
   }
   function applyVol() { if (master) master.gain.value = muted ? 0 : vol * 0.6; }
@@ -1205,7 +1286,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
       pv.x += (rvx - pv.x) * 0.4; pv.y += (rvy - pv.y) * 0.4;
       var sa = Math.hypot(ox, oy), sb = Math.hypot(pv.x, pv.y);
       if (sa > 60 && sb > 60) spin = clamp(spin + ((ox * pv.y - oy * pv.x) / (sa * sb)) * 0.3, -1, 1);
-      trail.push({ x: x, y: y, t: now }); if (trail.length > 60) trail.shift();
     }
     ptr.x = x; ptr.y = y; ptr.in = true; ptr.last = now; lastInteract = now;
     if (!hintGone) { hintGone = true; setTimeout(function () { hint.classList.add('gone'); }, 2500); }
@@ -1229,7 +1309,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
   sky.value = Math.round(T * 1000);
   sky.addEventListener('input', function () { T = sky.value / 1000; lastInteract = performance.now() / 1000; });
   document.getElementById('vol').addEventListener('input', function (e) { vol = e.target.value / 100; applyVol(); });
-  document.getElementById('wind').addEventListener('input', function (e) { windK = e.target.value / 100; });
   function toggle(btn, on) { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); }
   var driftBtn = document.getElementById('drift'), sndBtn = document.getElementById('snd');
   toggle(driftBtn, autoDrift);
@@ -1237,32 +1316,40 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
   sndBtn.addEventListener('click', function () { muted = !muted; toggle(sndBtn, !muted); initAudio(); applyVol(); });
   var chmBtn = document.getElementById('chm');
   chmBtn.addEventListener('click', function () { chimesOn = !chimesOn; toggle(chmBtn, chimesOn); initAudio(); });
-  var motBtn = document.getElementById('mot'); toggle(motBtn, motion);
-  motBtn.addEventListener('click', function () { motion = !motion; toggle(motBtn, motion); bake(); builtT = -1; });
   var nsdBtn = document.getElementById('nsd');
   nsdBtn.addEventListener('click', function () { nightSnd = !nightSnd; toggle(nsdBtn, nightSnd); initAudio(); });
   function startGust(amp, clear) { gust = { dir: Math.random() < 0.5 ? 1 : -1, x: 0, amp: amp, age: 0, clear: !!clear }; gust.x = gust.dir > 0 ? -W * 0.2 : W * 1.2; }
-  document.getElementById('gust').addEventListener('click', function () { initAudio(); startGust(1.2, true); chime(0.9, 0); chime(0.8, 0.3); chime(0.7, 0.65); lastInteract = performance.now() / 1000; });
+  var surBtn = document.getElementById('sur');
+  surBtn.addEventListener('click', function () { surpriseOn = !surpriseOn; toggle(surBtn, surpriseOn); nextSurprise = 0; });
+  function surpriseGust(now) { // a gust nobody asked for: it sweeps across and stirs the leaves away, with the same wind sound as the button
+    startGust(1.2, true);
+    if (!playGustClip(gust ? gust.dir : 1)) { chime(0.9, 0); chime(0.8, 0.3); chime(0.7, 0.65); }
+    nextSurprise = now + 70 + Math.random() * 90;
+  }
+  document.getElementById('gust').addEventListener('click', function () { initAudio(); startGust(1.2, true); if (!playGustClip(gust ? gust.dir : 1)) { chime(0.9, 0); chime(0.8, 0.3); chime(0.7, 0.65); } lastInteract = performance.now() / 1000; });
 
   /* ---------- loop ---------- */
   var lastT = 0, frame = 0;
   function loop(ms) {
     var time = ms / 1000, dt = Math.min(0.05, lastT ? time - lastT : 0.016); lastT = time; frame++;
     if (autoDrift) { T += dt / 240; if (T >= 1) T -= 1; if (frame % 10 === 0) sky.value = Math.round(T * 999); }
-    if (builtT < 0 || (frame % 8 === 0 && Math.abs(T - builtT) > 0.0015)) rebuild();
+    if (builtT < 0 || (frame % 8 === 0 && tintMoved())) rebuild();
     var nm = (T >= 0.9 || T < 0.12) ? 'Dawn' : T < 0.4 ? 'Day' : T < 0.62 ? 'Sunset' : 'Night'; if (nm !== lastName) { lastName = nm; when.textContent = nm; }
     var pnow = performance.now() / 1000;
+    if (surpriseOn) { // every minute or two, at no fixed moment
+      if (!nextSurprise || pnow > nextSurprise + 8) nextSurprise = pnow + 45 + Math.random() * 40; // first one after 45-85 s; and after the tab was in the background, start the wait over
+      else if (pnow >= nextSurprise) { if (gust) nextSurprise = pnow + 5; else surpriseGust(pnow); }
+    }
     var lifts = step(dt, time);
     var wi = clamp(wamp * Math.min(1, Math.hypot(pv.x, pv.y) / 600) * windK + (gust ? 0.8 * gust.amp : 0), 0, 1.2);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     drawSky(time);
     ctx.drawImage(tinted, 0, 0, W, H);
-    drawGrass(time, dt, wi); if (motion && MOUNDS.length) ctx.drawImage(moundT, 0, groundTop * DPR, moundT.width, moundT.height - groundTop * DPR, 0, groundTop, W, H - groundTop); drawShimmer(time, wi);
+    drawGrass(time, dt, wi); if (motion && MOUNDS.length) ctx.drawImage(moundT, mbx, mby, moundT.width / DPR, moundT.height / DPR); drawShimmer(time, wi);
     drawRays(time);
     drawLeaves();
     drawHalo();
     drawEffects(time);
-    drawTrail(pnow);
     ctx.fillStyle = vignette; ctx.fillRect(0, 0, W, H);
     windSound(wi, time); chimes(wi); nightSounds(time);
     var spd2 = Math.hypot(pv.x, pv.y);
@@ -1277,5 +1364,4 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
   requestAnimationFrame(loop);
 })();
 </script>
-
 <script>try{if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}catch(e){}</script></body></html>

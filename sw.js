@@ -1,10 +1,11 @@
 /* Relax Games offline worker. Bump VERSION when files change so phones refresh their saved copy. */
-var VERSION = 'relax-games-v1';
+var VERSION = 'relax-games-v2';
 var FILES = ['./', 'index.html', 'clover.html', 'fall.html', 'aspen.html', 'fonts.css',
   'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png',
   'thumbs/clover.jpg', 'thumbs/fall.jpg', 'thumbs/aspen.jpg',
   'fonts/cormorant-garamond-latin-400-italic.woff2', 'fonts/cormorant-garamond-latin-500-italic.woff2',
-  'fonts/karla-latin-400-normal.woff2', 'fonts/karla-latin-500-normal.woff2'];
+  'fonts/karla-latin-400-normal.woff2', 'fonts/karla-latin-500-normal.woff2',
+  'audio/wind-gust.mp3', 'audio/owl-hooting.mp3', 'audio/crickets.mp3', 'audio/day-birds-leaves.wav'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));
 });
