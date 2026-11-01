@@ -1027,11 +1027,11 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--ember); out
     } catch (e) { audioErr = (e && e.message) || String(e); if (!master) AC = null; }
   }
   /* ---------- recorded sound: the wind gust ---------- */
-  var GUSTCLIP = { url: 'audio/wind-gust.mp3', buf: null, norm: 1, vol: 0.5, loading: false };
-  var CRICKETCLIP = { url: 'audio/crickets.mp3', buf: null, norm: 1, vol: 0.24, loading: false, rms: true };
-  var BEDCLIP = { url: 'audio/day-birds-leaves.wav', buf: null, norm: 1, vol: 0.18, loading: false, rms: true }, bedG = null, bedSrc = null, bedZero = 0;
+  var GUSTCLIP = { url: 'aspen-gust.mp3', buf: null, norm: 1, vol: 0.5, loading: false };
+  var CRICKETCLIP = { url: 'aspen-crickets.mp3', buf: null, norm: 1, vol: 0.24, loading: false, rms: true };
+  var BEDCLIP = { url: 'aspen-birds.wav', buf: null, norm: 1, vol: 0.18, loading: false, rms: true }, bedG = null, bedSrc = null, bedZero = 0;
   var ckLevel = null, ckV = [], ckNextSpawn = 0, ckNextLull = 0, ckLullEnd = 0, owlDuckUntil = 0;
-  var OWL_ANSWER = 0.4, OWLCLIP = { url: 'audio/owl-hooting.mp3', buf: null, norm: 1, vol: 0.7, loading: false };
+  var OWL_ANSWER = 0.4, OWLCLIP = { url: 'aspen-owl.mp3', buf: null, norm: 1, vol: 0.7, loading: false };
   function loadClips() { loadClip(GUSTCLIP); loadClip(OWLCLIP); loadClip(CRICKETCLIP); loadClip(BEDCLIP); }
   function loadClip(c) { // each sound file is fetched and decoded once, after the first tap (the audio engine only exists then)
     if (!AC || c.buf || c.loading) return; c.loading = true;

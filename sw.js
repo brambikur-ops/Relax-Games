@@ -5,7 +5,7 @@ var FILES = ['./', 'index.html', 'clover.html', 'fall.html', 'aspen.html', 'font
   'thumbs/clover.jpg', 'thumbs/fall.jpg', 'thumbs/aspen.jpg',
   'fonts/cormorant-garamond-latin-400-italic.woff2', 'fonts/cormorant-garamond-latin-500-italic.woff2',
   'fonts/karla-latin-400-normal.woff2', 'fonts/karla-latin-500-normal.woff2',
-  'audio/wind-gust.mp3', 'audio/owl-hooting.mp3', 'audio/crickets.mp3', 'audio/day-birds-leaves.wav'];
+  'aspen-gust.mp3', 'aspen-owl.mp3', 'aspen-crickets.mp3', 'aspen-birds.wav'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));
 });
