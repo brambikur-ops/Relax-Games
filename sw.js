@@ -1,5 +1,5 @@
 /* Relax Games offline worker. Bump VERSION when files change so phones refresh their saved copy. */
-var VERSION = 'relax-games-v2';
+var VERSION = 'relax-games-v3';
 var FILES = ['./', 'index.html', 'clover.html', 'fall.html', 'aspen.html', 'fonts.css',
   'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png',
   'thumbs/clover.jpg', 'thumbs/fall.jpg', 'thumbs/aspen.jpg',
